@@ -22,7 +22,6 @@ module.exports = {
     },
     plugins: ["@typescript-eslint"],
     rules: {
-        quotes: ["error", "double"],
         semi: ["error", "always"],
     },
 };
