@@ -1,6 +1,5 @@
-import {PaginationQuery} from "./pagination-query";
+import { PaginationQuery } from "./pagination-query";
 
 export class Query {
-    constructor(readonly pagination: PaginationQuery) {
-    }
+    constructor(readonly pagination: PaginationQuery) {}
 }
