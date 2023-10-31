@@ -16,9 +16,86 @@ When a service is processing data using pagination, the input needs to contain t
 
 ![image](https://github.com/Donatien-bluesg/lib-pagination/assets/110004541/149f4055-da7a-4878-acb0-fc7c216c7056)
 
+```ts
+import {PaginationQuery} from "./pagination-query";
+
+class MyQuery extends Query {
+    constructor(readonly search: string, pagination: PaginationQuery) {
+        super(pagination);
+    }
+}
+```
+
 ## When querying a DB
 
 ![image](https://github.com/Donatien-bluesg/lib-pagination/assets/110004541/241a5405-d0b8-493e-bc20-4c29c48c57ca)
+
+#### Queries can be used in Repositories:
+```ts
+class MyRepo {
+    // Using Query Builder
+    async findSome(query: MyQuery): Promise<Page<MyEntity>> {
+        const [entities, count] = await this.createQueryBuilder('a')
+            .where(
+                'a.id::text ILIKE :search OR a.label ILIKE :search',
+                { search: `%${query.search}%` }
+            )
+            .skip(query.skip())
+            .take(query.pageSize)
+            .orderBy(query.orderBy({ alias: 'a' }), query.sortOrder)
+            .getManyAndCount();
+        
+        return new Page(entities, query.pagination, count);
+    }
+    
+    // Using Find options
+    async findOthers(query: MyQuery): Promise<Page<MyEntity>> {
+        const [entities, count] = this.findAndCount({
+            where: { id: Ilike(`%${query.search}%`) },
+            ...query.toDbOptions()
+        })
+        
+        return new Page(entities, query.pagination, count);
+    }
+}
+```
+
+#### Queries can be used in Service:
+
+```ts
+class MyService {
+    constructor(private repo: MyRepo) {}
+
+    // From another page with different content
+    async getSome(query: MyQuery): Promise<Page<MyObject>> {
+        const entities: Page<MyEntity> = await this.repo.findSome(query)
+
+        return entities.map(e => e.toMyObject())
+    }
+}
+```
+
+#### Queries and Pagination used in Controller
+```ts
+@Controller()
+export class MyController {
+    @Get()
+    // create pagination in swagger for this API
+    @ApiPaginationQuery(testDefaultPagination) 
+    @ApiResponse({ type: PaginationApiResponseDto })
+    test(
+        // extract the pagination query params, 
+        // replace missing values with default 
+        // and insert them into a Query object
+        @GetDefaultQuery(testDefaultPagination)
+            query: Query
+    ): PaginationApiResponseDto {
+        // This DTO is to be used in the service API Responses, 
+        // as { pagination: PaginationApiResponseDto }
+        return PaginationApiResponseDto.from(new Page([], query.pagination, 0));
+    }
+}
+```
 
 ## When calling an external API using pagination
 External APIs can be using pagination, but with different wording.
