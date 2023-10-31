@@ -1,6 +1,16 @@
 # Pagination
 This library provides a standard implementation of pagination queries and results, to be used in any services through our platform.
 
+## Configuration
+### Default Pagination Values
+It is possible to define the default value used for the pagination of a service by using environment values:
+```dotenv
+PAGINATION_DEFAULT_PAGE=1
+PAGINATION_DEFAULT_PAGE_SIZE=20
+PAGINATION_DEFAULT_SORT_BY=createdAt
+PAGINATION_DEFAULT_SORT_ORDER=DESC # Accept: ASC, DESC
+```
+
 ## General usage
 When a service is processing data using pagination, the input needs to contain the pagination data and the output need to provide the pagination information, so it can be used to request maybe other pages of data.
 
