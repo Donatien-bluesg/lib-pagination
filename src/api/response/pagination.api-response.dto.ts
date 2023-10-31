@@ -34,7 +34,7 @@ export class PaginationApiResponseDto {
     })
     total: number;
 
-    from(page: Page<unknown>): PaginationApiResponseDto {
+    static from(page: Page<unknown>): PaginationApiResponseDto {
         const dto = new PaginationApiResponseDto();
         const pagination = page.pagination;
 

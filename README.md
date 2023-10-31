@@ -35,8 +35,15 @@ Usually pagination is used on big lists. But we can imagine we need to split a v
 One first solution is using pages of [Key, Value].
 Another possibility would be to have a `Shard<T>` that would be a part of a map, eventually which could be combine again into the full map.
 
-# Project Installation
+# Contributing to the Project
 
+## Installation
 ```bash
 yarn install
+```
+
+## Run the Test app
+To display the example of swagger it is possible to start the test application with the command
+```bash
+yarn start:test-app
 ```
