@@ -3,8 +3,9 @@ import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 import { Type } from "class-transformer";
 import { Query } from "../../query";
 import { PaginationQuery } from "../../pagination-query";
+import { QueryOptionsApiRequest } from "./query-options.api-request";
 
-export class QueryApiRequestDto {
+export class QueryApiRequestDto implements QueryOptionsApiRequest {
     @IsInt()
     @IsOptional()
     @Min(1)
